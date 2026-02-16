@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>国家試験対策 看護薬理クエスト50問</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#eef5ff;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 8px rgba(0,0,0,0.1);
+}
+
+button{
+padding:12px;
+margin:5px;
+font-size:16px;
+width:250px;
+}
+
+.correct{color:green;font-weight:bold;}
+.wrong{color:red;font-weight:bold;}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>💊 国家試験対策 模試（50問）</h1>
+
+
+<div class="card">
+
+<h2 id="number"></h2>
+<h3 id="title"></h3>
+<p id="desc"></p>
+
+</div>
+
+
+<div class="card">
+
+<div id="choices"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>結果・解説</h3>
+
+<div id="result"></div>
+
+</div>
+
+
+<div class="card">
+
+<button onclick="nextProblem()">
+
+次の問題
+
+</button>
+
+
+<button onclick="resetQuiz()">
+
+最初の画面に戻る
+
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+
+スコア：
+
+<span id="score">0</span>
+
+/
+
+<span id="total">0</span>
+
+（<span id="rate">0</span>%）
+
+</h2>
+
+</div>
+
+
+
+<script>
+
+
+// ===== データ =====
+
+let baseCases=[
+
+["乾性咳","高血圧治療後","ACE阻害薬",
+["ACE阻害薬","ARB","CCB","利尿薬","β遮断薬"],
+"ACE阻害薬はブラジキニン増加により乾性咳を起こす"],
+
+["徐脈","脈拍40","β遮断薬",
+["β遮断薬","ARB","ACE阻害薬","利尿薬","PPI"],
+"β遮断薬は心拍数を低下させる"],
+
+["浮腫","下腿浮腫","アムロジピン",
+["アムロジピン","ARB","利尿薬","PPI","抗菌薬"],
+"Ca拮抗薬は浮腫を起こす"],
+
+["低K血症","脱力","フロセミド",
+["フロセミド","ARB","PPI","β遮断薬","スタチン"],
+"ループ利尿薬は低K血症"],
+
+["低血糖","冷汗","インスリン",
+["インスリン","メトホルミン","ARB","PPI","CCB"],
+"インスリンは低血糖を起こす"],
+
+["転倒","ふらつき","ベンゾ",
+["ベンゾ","ARB","CCB","ビタミン","抗菌薬"],
+"ベンゾは転倒リスク"],
+
+["せん妄","意識混濁","抗コリン",
+["抗コリン","ARB","β遮断薬","利尿薬","スタチン"],
+"抗コリン作用"],
+
+["筋肉痛","脂質治療","スタチン",
+["スタチン","ARB","利尿薬","PPI","β遮断薬"],
+"横紋筋融解"],
+
+["高K","K 5.8","ARB",
+["ARB","CCB","利尿薬","β遮断薬","PPI"],
+"ARBは高K血症"],
+
+["下痢","抗菌薬後","抗菌薬",
+["抗菌薬","PPI","スタチン","ARB","利尿薬"],
+"腸内細菌変化"]
+
+];
+
+
+
+// ===== 50問生成 =====
+
+let cases=[];
+
+while(cases.length<50){
+
+cases=cases.concat(baseCases);
+
+}
+
+cases=cases.slice(0,50);
+
+
+
+// ===== 状態 =====
+
+let index=0;
+let score=0;
+
+
+
+function shuffle(array){
+
+for(let i=array.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*(i+1));
+
+[array[i],array[j]]=[array[j],array[i]];
+
+}
+
+return array;
+
+}
+
+
+
+function showProblem(){
+
+// 結果欄リセット
+document.getElementById("result").innerHTML="";
+
+
+let c=cases[index];
+
+
+document.getElementById("number").innerText=
+"第"+(index+1)+"問";
+
+
+document.getElementById("title").innerText=
+c[0];
+
+
+document.getElementById("desc").innerText=
+c[1];
+
+
+let choices=shuffle([...c[3]]);
+
+
+let html="";
+
+
+choices.forEach(choice=>{
+
+html+=`<button onclick="answer('${choice}')">
+
+${choice}
+
+</button><br>`;
+
+});
+
+
+document.getElementById("choices").innerHTML=html;
+
+}
+
+
+
+function answer(choice){
+
+let c=cases[index];
+
+
+let result="";
+
+
+if(choice==c[2]){
+
+score++;
+
+result="<span class='correct'>正解</span><br>";
+
+}
+
+else{
+
+result="<span class='wrong'>不正解</span><br>";
+
+result+="正解："+c[2]+"<br>";
+
+}
+
+
+result+="解説："+c[4];
+
+
+document.getElementById("result").innerHTML=result;
+
+
+updateScore();
+
+}
+
+
+
+function nextProblem(){
+
+if(index<49){
+
+index++;
+
+showProblem();
+
+}
+
+else{
+
+alert("終了");
+
+}
+
+}
+
+
+
+function updateScore(){
+
+document.getElementById("score").innerText=score;
+
+document.getElementById("total").innerText=index+1;
+
+let rate=Math.round(score/(index+1)*100);
+
+document.getElementById("rate").innerText=rate;
+
+}
+
+
+
+function resetQuiz(){
+
+index=0;
+
+score=0;
+
+updateScore();
+
+showProblem();
+
+}
+
+
+
+showProblem();
+
+
+</script>
+
+</body>
+</html>
