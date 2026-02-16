@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>国家試験完全形式 看護アセスメント</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#eef5ff;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:15px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+table{
+border-collapse:collapse;
+}
+
+td{
+border:1px solid #ccc;
+padding:6px;
+}
+
+img{
+width:300px;
+margin-top:10px;
+}
+
+button{
+padding:10px;
+margin:5px;
+width:280px;
+}
+
+.correct{color:green;font-weight:bold;}
+.wrong{color:red;font-weight:bold;}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🩺 国家試験形式 看護アセスメント</h1>
+
+<div class="card">
+
+<h2 id="caseNumber"></h2>
+
+<h3>患者背景</h3>
+<div id="patient"></div>
+
+<h3>バイタル</h3>
+<div id="vital"></div>
+
+<h3>検査値</h3>
+<table id="lab"></table>
+
+<h3>画像</h3>
+<img id="image">
+
+<h3>服薬</h3>
+<div id="drug"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>質問</h3>
+
+優先してアセスメントする項目はどれか
+
+<div id="choices"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>結果</h3>
+
+<div id="result"></div>
+
+</div>
+
+
+<button onclick="nextCase()">次の症例</button>
+
+<button onclick="resetQuiz()">最初に戻る</button>
+
+
+
+<script>
+
+
+// ===== 症例データ =====
+
+let cases=[
+
+
+{
+patient:
+"82歳男性。心不全で入院中。昨日から脱力感を訴えている。",
+
+vital:
+"BP 100/60 HR 58 SpO₂ 94%",
+
+lab:
+[
+["Na","138"],
+["K","2.8"],
+["Cr","1.2"]
+],
+
+image:"images/ecg.jpg",
+
+drug:
+"フロセミド",
+
+correct:
+"血清カリウム値",
+
+choices:
+[
+"血糖値",
+"血清カリウム値",
+"呼吸音",
+"瞳孔",
+"皮膚"
+],
+
+explain:
+"利尿薬は低カリウム血症を起こす"
+
+
+},
+
+
+{
+patient:
+"68歳男性。糖尿病。冷汗とふらつき。",
+
+vital:
+"BP 120/70 HR 90",
+
+lab:
+[
+["血糖","42"]
+],
+
+image:"images/xray.jpg",
+
+drug:
+"インスリン",
+
+correct:
+"血糖値",
+
+choices:
+[
+"血圧",
+"血糖値",
+"呼吸音",
+"尿量",
+"SpO₂"
+],
+
+explain:
+"低血糖"
+
+
+},
+
+
+{
+patient:
+"75歳女性。降圧薬開始後、足の浮腫。",
+
+vital:
+"BP 130/80",
+
+lab:
+[
+["BNP","50"]
+],
+
+image:"images/edema.jpg",
+
+drug:
+"アムロジピン",
+
+correct:
+"浮腫の程度",
+
+choices:
+[
+"血糖値",
+"浮腫の程度",
+"意識",
+"尿量",
+"体温"
+],
+
+explain:
+"Ca拮抗薬の副作用"
+
+
+}
+
+
+];
+
+
+
+// ===== 状態 =====
+
+let index=0;
+
+
+
+function shuffle(array){
+
+for(let i=array.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*(i+1));
+
+[array[i],array[j]]=[array[j],array[i]];
+
+}
+
+return array;
+
+}
+
+
+
+function showCase(){
+
+let c=cases[index];
+
+
+document.getElementById("caseNumber").innerText=
+"症例 "+(index+1);
+
+
+document.getElementById("patient").innerText=c.patient;
+
+document.getElementById("vital").innerText=c.vital;
+
+document.getElementById("drug").innerText=c.drug;
+
+document.getElementById("image").src=c.image;
+
+
+// 検査値
+
+let labHTML="";
+
+c.lab.forEach(row=>{
+
+labHTML+="<tr><td>"+row[0]+"</td><td>"+row[1]+"</td></tr>";
+
+});
+
+document.getElementById("lab").innerHTML=labHTML;
+
+
+// 選択肢
+
+let choices=shuffle([...c.choices]);
+
+let html="";
+
+
+choices.forEach(choice=>{
+
+html+=`<button onclick="answer('${choice}')">
+
+${choice}
+
+</button><br>`;
+
+});
+
+
+document.getElementById("choices").innerHTML=html;
+
+document.getElementById("result").innerHTML="";
+
+}
+
+
+
+function answer(choice){
+
+let c=cases[index];
+
+let result="";
+
+
+if(choice==c.correct){
+
+result="<span class='correct'>正解</span><br>";
+
+}else{
+
+result="<span class='wrong'>不正解</span><br>";
+
+result+="正解："+c.correct+"<br>";
+
+}
+
+
+result+="解説："+c.explain;
+
+
+document.getElementById("result").innerHTML=result;
+
+}
+
+
+
+function nextCase(){
+
+index++;
+
+if(index>=cases.length){
+
+index=0;
+
+}
+
+showCase();
+
+}
+
+
+
+function resetQuiz(){
+
+index=0;
+
+showCase();
+
+}
+
+
+
+showCase();
+
+
+</script>
+
+</body>
+
+</html>
