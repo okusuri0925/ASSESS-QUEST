@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>看護薬理クエスト 10症例版</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#f0f6ff;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+button{
+padding:10px;
+margin:5px;
+font-size:16px;
+}
+
+.correct{color:green;font-weight:bold;}
+.wrong{color:red;}
+
+</style>
+</head>
+
+<body>
+
+<h1>💊 看護薬理クエスト（10症例）</h1>
+
+<div class="card">
+
+学生名：
+<input id="name">
+
+<button onclick="start()">開始</button>
+
+</div>
+
+
+<div id="game" style="display:none">
+
+<div class="card">
+
+<h2 id="title"></h2>
+<p id="desc"></p>
+
+</div>
+
+<div class="card">
+
+原因薬剤は？
+
+<div id="choices"></div>
+
+</div>
+
+<div class="card">
+
+<div id="result"></div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>ランキング</h2>
+
+<div id="rank"></div>
+
+</div>
+
+
+<script>
+
+
+let cases=[
+
+// 1
+{
+title:"転倒",
+desc:"80歳女性 転倒・ふらつき",
+correct:"ベンゾ",
+choices:["ベンゾ","PPI","ビタミン"],
+explain:"ベンゾは転倒リスク増加"
+},
+
+// 2
+{
+title:"浮腫",
+desc:"高血圧患者 下腿浮腫",
+correct:"アムロジピン",
+choices:["アムロジピン","ARB","抗菌薬"],
+explain:"Ca拮抗薬は浮腫"
+},
+
+// 3
+{
+title:"低K血症",
+desc:"脱力感",
+correct:"フロセミド",
+choices:["フロセミド","スタチン","ARB"],
+explain:"ループ利尿薬は低K"
+},
+
+// 4
+{
+title:"心不全増悪",
+desc:"呼吸困難",
+correct:"NSAIDs",
+choices:["NSAIDs","PPI","ビタミン"],
+explain:"NSAIDsは体液貯留"
+},
+
+// 5
+{
+title:"せん妄",
+desc:"意識混濁",
+correct:"抗コリン",
+choices:["抗コリン","ARB","β遮断"],
+explain:"抗コリンはせん妄"
+},
+
+// 6
+{
+title:"咳",
+desc:"乾性咳",
+correct:"ACE阻害薬",
+choices:["ACE阻害薬","ARB","CCB"],
+explain:"ACE阻害薬は咳"
+},
+
+// 7
+{
+title:"低血糖",
+desc:"冷汗",
+correct:"インスリン",
+choices:["インスリン","メトホルミン","DPP4"],
+explain:"インスリンは低血糖"
+},
+
+// 8
+{
+title:"横紋筋融解",
+desc:"筋肉痛",
+correct:"スタチン",
+choices:["スタチン","ARB","PPI"],
+explain:"スタチンは横紋筋融解"
+},
+
+// 9
+{
+title:"徐脈",
+desc:"脈拍40",
+correct:"β遮断薬",
+choices:["β遮断薬","ARB","利尿薬"],
+explain:"β遮断薬は徐脈"
+},
+
+// 10
+{
+title:"高K",
+desc:"K 5.8",
+correct:"ARB",
+choices:["ARB","CCB","利尿薬"],
+explain:"ARBは高K"
+
+}
+
+];
+
+
+let index=0;
+let score=0;
+let student="";
+
+
+
+function start(){
+
+student=document.getElementById("name").value;
+
+index=0;
+score=0;
+
+document.getElementById("game").style.display="block";
+
+next();
+
+}
+
+
+
+function next(){
+
+let c=cases[index];
+
+document.getElementById("title").innerText
+
+="症例："+c.title;
+
+document.getElementById("desc").innerText
+
+=c.desc;
+
+
+let html="";
+
+c.choices.forEach(choice=>{
+
+html+=`<button onclick="answer('${choice}')">
+
+${choice}
+
+</button>`;
+
+});
+
+
+document.getElementById("choices").innerHTML=html;
+
+}
+
+
+
+function answer(choice){
+
+let c=cases[index];
+
+
+if(choice==c.correct){
+
+score+=10;
+
+document.getElementById("result").innerHTML=
+
+"<span class='correct'>正解</span><br>"+c.explain;
+
+}
+
+else{
+
+document.getElementById("result").innerHTML=
+
+"<span class='wrong'>不正解</span><br>正解："+c.correct
+
++"<br>"+c.explain;
+
+}
+
+
+index++;
+
+if(index<cases.length){
+
+setTimeout(next,1500);
+
+}else{
+
+finish();
+
+}
+
+}
+
+
+
+function finish(){
+
+save();
+
+alert("終了 スコア："+score);
+
+showRank();
+
+}
+
+
+
+function save(){
+
+let data=
+
+JSON.parse(localStorage.getItem("rank")||"[]");
+
+data.push({
+
+name:student,
+score:score
+
+});
+
+data.sort((a,b)=>b.score-a.score);
+
+localStorage.setItem("rank",JSON.stringify(data));
+
+}
+
+
+
+function showRank(){
+
+let data=
+
+JSON.parse(localStorage.getItem("rank")||"[]");
+
+let html="";
+
+data.forEach(r=>{
+
+html+=r.name+"："+r.score+"<br>";
+
+});
+
+document.getElementById("rank").innerHTML=html;
+
+}
+
+
+
+showRank();
+
+</script>
+
+</body>
+</html>
