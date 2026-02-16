@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ASSESS QUEST PHARMA</title>
+
+<style>
+
+body{
+
+font-family:sans-serif;
+background:#f4f8fb;
+padding:20px;
+
+}
+
+.card{
+
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+
+}
+
+button{
+
+padding:10px;
+margin:5px;
+font-size:16px;
+
+}
+
+.correct{
+
+color:green;
+
+}
+
+.wrong{
+
+color:red;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<h1>💊 看護薬理 ASSESS QUEST</h1>
+
+
+
+<div class="card">
+
+<h2>症例</h2>
+
+<p>
+
+80歳女性<br>
+
+主訴：ふらつき・転倒
+
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>情報収集</h3>
+
+<button onclick="collect('bp')">
+血圧測定
+</button>
+
+<button onclick="collect('lab')">
+検査データ
+</button>
+
+<button onclick="collect('med')">
+服薬確認
+</button>
+
+<button onclick="collect('mental')">
+意識状態
+</button>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>取得情報</h3>
+
+<div id="info"></div>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>原因薬剤を選択</h3>
+
+<button onclick="answer('benzo')">
+ベンゾジアゼピン
+</button>
+
+<button onclick="answer('statin')">
+スタチン
+</button>
+
+<button onclick="answer('pPI')">
+PPI
+</button>
+
+<button onclick="answer('vitamin')">
+ビタミン
+
+</button>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>結果</h3>
+
+<div id="result"></div>
+
+</div>
+
+
+
+<script>
+
+
+let collected=[];
+
+
+
+function collect(type){
+
+let text="";
+
+
+if(type=="bp"){
+
+text="血圧 100/60";
+
+}
+
+
+if(type=="lab"){
+
+text="Na正常";
+
+}
+
+
+if(type=="med"){
+
+text="睡眠薬服用";
+
+}
+
+
+if(type=="mental"){
+
+text="軽度せん妄";
+
+}
+
+
+
+document.getElementById("info").innerHTML
+
++=text+"<br>";
+
+}
+
+
+
+function answer(ans){
+
+
+if(ans=="benzo"){
+
+
+document.getElementById("result").innerHTML
+
+=
+
+"<span class='correct'>正解！<br>ベンゾジアゼピンは転倒リスクを増加させます</span>";
+
+
+}
+
+else{
+
+
+document.getElementById("result").innerHTML
+
+=
+
+"<span class='wrong'>不正解<br>睡眠薬がヒントです</span>";
+
+
+}
+
+
+}
+
+
+</script>
+
+
+
+</body>
+</html>
