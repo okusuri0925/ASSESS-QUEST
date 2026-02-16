@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>国家試験対策 看護薬理クエスト</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#f5f9ff;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+button{
+padding:12px;
+margin:5px;
+font-size:16px;
+width:200px;
+}
+
+.correct{
+color:green;
+font-weight:bold;
+}
+
+.wrong{
+color:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>💊 国家試験対策 看護薬理クエスト</h1>
+
+<div class="card">
+
+<h2 id="title"></h2>
+
+<p id="desc"></p>
+
+</div>
+
+
+<div class="card">
+
+原因薬剤は？
+
+<div id="choices"></div>
+
+</div>
+
+
+<div class="card">
+
+<div id="result"></div>
+
+</div>
+
+
+<div class="card">
+
+<button onclick="next()">
+
+次の問題
+
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+
+スコア：
+
+<span id="score">0</span>
+
+/
+
+<span id="total">0</span>
+
+</h2>
+
+</div>
+
+
+
+<script>
+
+
+let cases=[
+
+
+// ACE阻害薬
+{
+title:"乾性咳",
+
+desc:"高血圧治療後から空咳",
+
+correct:"ACE阻害薬",
+
+choices:["ACE阻害薬","ARB","CCB","β遮断薬","利尿薬"],
+
+explain:"ACE阻害薬はブラジキニン増加により咳"
+
+},
+
+
+// スタチン
+{
+title:"筋肉痛",
+
+desc:"脂質異常症治療中",
+
+correct:"スタチン",
+
+choices:["スタチン","ARB","利尿薬","PPI","β遮断薬"],
+
+explain:"横紋筋融解"
+
+},
+
+
+// ベンゾ
+{
+title:"転倒",
+
+desc:"高齢者 ふらつき",
+
+correct:"ベンゾ",
+
+choices:["ベンゾ","ARB","CCB","ビタミン","抗菌薬"],
+
+explain:"鎮静作用"
+
+},
+
+
+// フロセミド
+{
+title:"低K血症",
+
+desc:"脱力",
+
+correct:"フロセミド",
+
+choices:["フロセミド","ARB","PPI","β遮断薬","スタチン"],
+
+explain:"K排泄"
+
+},
+
+
+// β遮断薬
+{
+title:"徐脈",
+
+desc:"脈拍40",
+
+correct:"β遮断薬",
+
+choices:["β遮断薬","ACE阻害薬","ARB","利尿薬","PPI"],
+
+explain:"心拍抑制"
+
+},
+
+// インスリン
+{
+title:"低血糖",
+
+desc:"冷汗",
+
+correct:"インスリン",
+
+choices:["インスリン","メトホルミン","DPP4","ARB","PPI"],
+
+explain:"血糖低下"
+
+}
+
+];
+
+
+
+let score=0;
+let total=0;
+let current;
+
+
+
+function shuffle(array){
+
+for(let i=array.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*(i+1));
+
+[array[i],array[j]]=[array[j],array[i]];
+
+}
+
+return array;
+
+}
+
+
+
+function next(){
+
+
+current=
+
+cases[Math.floor(Math.random()*cases.length)];
+
+
+document.getElementById("title").innerText
+
+="症例："+current.title;
+
+
+document.getElementById("desc").innerText
+
+=current.desc;
+
+
+
+let shuffled=
+
+shuffle([...current.choices]);
+
+
+let html="";
+
+
+shuffled.forEach(choice=>{
+
+
+html+=
+
+`<button onclick="answer('${choice}')">
+
+${choice}
+
+</button><br>`;
+
+
+});
+
+
+document.getElementById("choices").innerHTML
+
+=html;
+
+
+}
+
+
+
+function answer(choice){
+
+
+total++;
+
+
+if(choice==current.correct){
+
+score++;
+
+document.getElementById("result").innerHTML
+
+="<span class='correct'>正解</span><br>"
+
++current.explain;
+
+}
+
+else{
+
+document.getElementById("result").innerHTML
+
+="<span class='wrong'>不正解</span><br>"
+
++"正解："+current.correct
+
++"<br>"+current.explain;
+
+}
+
+
+document.getElementById("score").innerText
+
+=score;
+
+
+document.getElementById("total").innerText
+
+=total;
+
+
+}
+
+
+
+next();
+
+
+</script>
+
+</body>
+
+</html>
