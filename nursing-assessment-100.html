@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>看護アセスメント演習（100症例）</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#f0f6ff;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:15px;
+border-radius:10px;
+box-shadow:0 0 8px rgba(0,0,0,0.1);
+}
+
+button{
+padding:12px;
+margin:5px;
+width:300px;
+font-size:16px;
+}
+
+.correct{
+color:green;
+font-weight:bold;
+}
+
+.wrong{
+color:red;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🩺 看護アセスメント演習（100症例）</h1>
+
+<div class="card">
+
+<h2 id="number"></h2>
+
+<p id="patient"></p>
+
+<p><b>質問：</b>優先してアセスメントする項目はどれか</p>
+
+</div>
+
+
+<div class="card">
+
+<div id="choices"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>結果</h3>
+
+<div id="result"></div>
+
+</div>
+
+
+<button onclick="nextCase()">次の症例</button>
+
+<button onclick="resetQuiz()">最初に戻る</button>
+
+
+<div class="card">
+
+正解数：
+
+<span id="score">0</span>
+
+/
+
+<span id="total">0</span>
+
+</div>
+
+
+
+<script>
+
+
+// ===== 症例データ（代表例） =====
+
+let baseCases=[
+
+
+{
+patient:"82歳男性。心不全でフロセミド投与中。本日、脱力感を訴えている。",
+correct:"血清カリウム値",
+choices:[
+"血清カリウム値",
+"血糖値",
+"呼吸音",
+"瞳孔径",
+"皮膚色"
+],
+explain:"利尿薬は低カリウム血症を起こす"
+},
+
+
+{
+patient:"68歳男性。糖尿病でインスリン使用中。冷汗が出現している。",
+correct:"血糖値",
+choices:[
+"血圧",
+"血糖値",
+"呼吸数",
+"SpO₂",
+"体温"
+],
+explain:"低血糖の可能性"
+},
+
+
+{
+patient:"70歳女性。降圧薬開始後から足の浮腫が出現した。",
+correct:"浮腫の程度",
+choices:[
+"浮腫の程度",
+"血糖値",
+"意識レベル",
+"瞳孔",
+"腹部"
+],
+explain:"Ca拮抗薬の副作用"
+},
+
+
+{
+patient:"80歳女性。睡眠薬開始後、転倒した。",
+correct:"意識レベル",
+choices:[
+"血糖値",
+"意識レベル",
+"呼吸音",
+"尿量",
+"体温"
+],
+explain:"ベンゾジアゼピンの副作用"
+},
+
+
+{
+patient:"75歳男性。ACE阻害薬開始後、乾いた咳。",
+correct:"咳の性状",
+choices:[
+"血圧",
+"咳の性状",
+"血糖",
+"尿量",
+"皮膚"
+],
+explain:"ACE阻害薬の副作用"
+}
+
+
+];
+
+
+// ===== 100症例に拡張 =====
+
+let cases=[];
+
+while(cases.length<100){
+
+cases=cases.concat(baseCases);
+
+}
+
+cases=cases.slice(0,100);
+
+
+// ===== 状態 =====
+
+let index=0;
+let score=0;
+
+
+// ===== シャッフル =====
+
+function shuffle(array){
+
+for(let i=array.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*(i+1));
+
+[array[i],array[j]]=[array[j],array[i]];
+
+}
+
+return array;
+
+}
+
+
+// ===== 表示 =====
+
+function showCase(){
+
+let c=cases[index];
+
+document.getElementById("number").innerText=
+"症例 "+(index+1);
+
+document.getElementById("patient").innerText=
+c.patient;
+
+
+let choices=shuffle([...c.choices]);
+
+let html="";
+
+choices.forEach(choice=>{
+
+html+=`<button onclick="answer('${choice}')">
+
+${choice}
+
+</button><br>`;
+
+});
+
+
+document.getElementById("choices").innerHTML=html;
+
+document.getElementById("result").innerHTML="";
+
+updateScore();
+
+}
+
+
+// ===== 回答 =====
+
+function answer(choice){
+
+let c=cases[index];
+
+let result="";
+
+
+if(choice==c.correct){
+
+score++;
+
+result="<span class='correct'>正解</span><br>";
+
+}
+else{
+
+result="<span class='wrong'>不正解</span><br>";
+
+result+="正解："+c.correct+"<br>";
+
+}
+
+result+="解説："+c.explain;
+
+
+document.getElementById("result").innerHTML=result;
+
+updateScore();
+
+}
+
+
+// ===== 次 =====
+
+function nextCase(){
+
+if(index<99){
+
+index++;
+
+showCase();
+
+}
+else{
+
+alert("終了");
+
+}
+
+}
+
+
+// ===== リセット =====
+
+function resetQuiz(){
+
+index=0;
+score=0;
+
+showCase();
+
+}
+
+
+// ===== スコア表示 =====
+
+function updateScore(){
+
+document.getElementById("score").innerText=score;
+
+document.getElementById("total").innerText=index+1;
+
+}
+
+
+// ===== 初期表示 =====
+
+showCase();
+
+
+</script>
+
+</body>
+</html>
