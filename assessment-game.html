@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ASSESS QUEST</title>
+
+<style>
+
+body{
+font-family: sans-serif;
+background:#f0f4f8;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+button{
+padding:10px;
+margin:5px;
+font-size:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🩺 ASSESS QUEST</h1>
+
+<div class="card">
+
+<h2>患者情報</h2>
+
+<p>
+
+78歳 男性<br>
+主訴：呼吸困難<br>
+既往：心不全
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>残りポイント：<span id="point">10</span></h2>
+
+<button onclick="collect('vital',1,10)">
+バイタル測定（1）
+</button>
+
+<button onclick="collect('lung',2,20)">
+聴診（2）
+</button>
+
+<button onclick="collect('med',3,30)">
+服薬確認（3）
+</button>
+
+<button onclick="collect('family',3,15)">
+家族から情報（3）
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>取得情報</h2>
+
+<div id="info"></div>
+
+</div>
+
+
+<div class="card">
+
+<button onclick="finish()">
+
+アセスメント実行
+
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>結果</h2>
+
+<div id="result"></div>
+
+</div>
+
+
+<script>
+
+let point=10;
+let score=0;
+
+
+function collect(type,cost,value){
+
+if(point<cost){
+
+alert("ポイント不足");
+
+return;
+
+}
+
+
+point-=cost;
+
+score+=value;
+
+document.getElementById("point").innerText=point;
+
+
+let text="";
+
+
+if(type=="vital"){
+
+text="SpO2 88%";
+
+}
+
+if(type=="lung"){
+
+text="湿性ラ音あり";
+
+}
+
+if(type=="med"){
+
+text="NSAIDs服用中";
+
+}
+
+if(type=="family"){
+
+text="最近体重増加";
+
+}
+
+
+document.getElementById("info").innerHTML
++=text+"<br>";
+
+}
+
+
+
+function finish(){
+
+let diagnosis="";
+
+
+if(score>=60){
+
+diagnosis="正解：心不全増悪";
+
+}
+
+else{
+
+diagnosis="情報不足：アセスメント困難";
+
+}
+
+
+document.getElementById("result").innerHTML
+
+=
+
+"スコア："+score+"<br>"+diagnosis;
+
+}
+
+
+</script>
+
+</body>
+
+</html>
