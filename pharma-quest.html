@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>看護薬理クエスト</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+background:#eef5ff;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+button{
+padding:10px;
+margin:5px;
+}
+
+.correct{
+color:green;
+font-weight:bold;
+}
+
+.wrong{
+color:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>💊 看護薬理クエスト</h1>
+
+<div class="card">
+
+学生名：
+
+<input id="name">
+
+<button onclick="start()">
+
+開始
+
+</button>
+
+</div>
+
+<div id="game" style="display:none">
+
+<div class="card">
+
+<h2 id="case"></h2>
+
+<p id="desc"></p>
+
+</div>
+
+
+<div class="card">
+
+原因薬剤は？
+
+<div id="choices"></div>
+
+</div>
+
+
+<div class="card">
+
+結果：
+
+<div id="result"></div>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>ランキング</h2>
+
+<div id="rank"></div>
+
+</div>
+
+
+<script>
+
+
+let cases=[
+
+{
+
+name:"転倒",
+
+desc:"80歳女性 ふらつき",
+
+correct:"ベンゾ",
+
+choices:["ベンゾ","PPI","ビタミン"]
+
+},
+
+{
+
+name:"浮腫",
+
+desc:"高血圧患者",
+
+correct:"アムロジピン",
+
+choices:["アムロジピン","ARB","抗菌薬"]
+
+},
+
+{
+
+name:"低K",
+
+desc:"脱力",
+
+correct:"フロセミド",
+
+choices:["フロセミド","スタチン","β遮断"]
+
+},
+
+{
+
+name:"心不全",
+
+desc:"呼吸困難",
+
+correct:"NSAIDs",
+
+choices:["NSAIDs","PPI","ビタミン"]
+
+},
+
+{
+
+name:"せん妄",
+
+desc:"意識障害",
+
+correct:"抗コリン",
+
+choices:["抗コリン","ARB","カルシウム"]
+
+}
+
+];
+
+
+let score=0;
+let index=0;
+let student="";
+
+
+
+function start(){
+
+student=document.getElementById("name").value;
+
+score=0;
+index=0;
+
+document.getElementById("game").style.display="block";
+
+next();
+
+}
+
+
+
+function next(){
+
+let c=cases[index];
+
+document.getElementById("case").innerText
+
+="症例："+c.name;
+
+document.getElementById("desc").innerText
+
+=c.desc;
+
+
+let html="";
+
+c.choices.forEach(function(choice){
+
+html+=
+
+`<button onclick="answer('${choice}')">
+
+${choice}
+
+</button>`;
+
+});
+
+
+document.getElementById("choices").innerHTML=html;
+
+}
+
+
+
+function answer(choice){
+
+let correct=cases[index].correct;
+
+
+if(choice==correct){
+
+score+=10;
+
+document.getElementById("result").innerHTML
+
+="<span class='correct'>正解</span>";
+
+}
+
+else{
+
+document.getElementById("result").innerHTML
+
+="<span class='wrong'>不正解 正解："+correct+"</span>";
+
+}
+
+
+index++;
+
+
+if(index<cases.length){
+
+setTimeout(next,1000);
+
+}
+
+else{
+
+finish();
+
+}
+
+
+}
+
+
+
+function finish(){
+
+save();
+
+alert("終了 スコア："+score);
+
+showRank();
+
+}
+
+
+
+function save(){
+
+let data=
+
+JSON.parse(localStorage.getItem("rank")||"[]");
+
+
+data.push({
+
+name:student,
+
+score:score
+
+});
+
+
+data.sort((a,b)=>b.score-a.score);
+
+
+localStorage.setItem("rank",
+
+JSON.stringify(data));
+
+}
+
+
+
+function showRank(){
+
+let data=
+
+JSON.parse(localStorage.getItem("rank")||"[]");
+
+
+let html="";
+
+
+data.forEach(function(r){
+
+html+=r.name+" : "+r.score+"<br>";
+
+});
+
+
+document.getElementById("rank").innerHTML
+
+=html;
+
+}
+
+
+showRank();
+
+
+</script>
+
+
+</body>
+
+</html>
