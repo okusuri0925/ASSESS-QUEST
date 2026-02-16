@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ASSESS QUEST PRO</title>
+
+<style>
+
+body{
+
+font-family:sans-serif;
+background:#eef2f7;
+padding:20px;
+
+}
+
+.card{
+
+background:white;
+padding:20px;
+margin:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+
+}
+
+button{
+
+padding:10px;
+margin:5px;
+font-size:16px;
+
+}
+
+h1{
+
+color:#2c5282;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<h1>🩺 ASSESS QUEST PRO</h1>
+
+
+<div class="card">
+
+<h2>症例選択</h2>
+
+<button onclick="startCase(1)">
+症例1：心不全
+</button>
+
+<button onclick="startCase(2)">
+症例2：肺炎
+</button>
+
+</div>
+
+
+
+<div id="game" style="display:none">
+
+
+<div class="card">
+
+<h2 id="patient"></h2>
+
+<p id="desc"></p>
+
+</div>
+
+
+<div class="card">
+
+残りポイント：
+
+<span id="point"></span>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>情報収集</h3>
+
+<div id="buttons"></div>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>取得情報</h3>
+
+<div id="info"></div>
+
+</div>
+
+
+
+<div class="card">
+
+<button onclick="finish()">
+
+アセスメント実行
+
+</button>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>結果</h3>
+
+<div id="result"></div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+let point;
+let score;
+let currentCase;
+
+
+
+function startCase(caseNum){
+
+document.getElementById("game").style.display="block";
+
+
+point=10;
+score=0;
+currentCase=caseNum;
+
+
+document.getElementById("point").innerText=point;
+document.getElementById("info").innerHTML="";
+document.getElementById("result").innerHTML="";
+
+
+if(caseNum==1){
+
+document.getElementById("patient").innerText="症例：心不全";
+
+document.getElementById("desc").innerText="78歳男性 呼吸困難";
+
+
+createButtons([
+
+["バイタル",1,10,"SpO2 88%"],
+
+["聴診",2,20,"湿性ラ音"],
+
+["服薬",3,30,"NSAIDs服用"],
+
+["浮腫",2,20,"下腿浮腫"]
+
+]);
+
+}
+
+
+if(caseNum==2){
+
+document.getElementById("patient").innerText="症例：肺炎";
+
+document.getElementById("desc").innerText="80歳女性 発熱";
+
+
+createButtons([
+
+["体温",1,10,"38.5℃"],
+
+["聴診",2,20,"crackle"],
+
+["嚥下",3,30,"嚥下障害"],
+
+["食事",2,20,"食欲低下"]
+
+]);
+
+}
+
+
+}
+
+
+
+function createButtons(list){
+
+let html="";
+
+
+list.forEach(function(btn){
+
+
+html+=
+
+`<button onclick="collect(${btn[1]},${btn[2]},'${btn[3]}')">
+
+${btn[0]} (${btn[1]})
+
+</button>`;
+
+});
+
+
+document.getElementById("buttons").innerHTML=html;
+
+
+}
+
+
+
+function collect(cost,value,text){
+
+
+if(point<cost){
+
+alert("ポイント不足");
+
+return;
+
+}
+
+
+point-=cost;
+score+=value;
+
+
+document.getElementById("point").innerText=point;
+
+
+document.getElementById("info").innerHTML
+
++=text+"<br>";
+
+
+}
+
+
+
+function finish(){
+
+
+let diagnosis="";
+let level="";
+
+
+if(currentCase==1){
+
+if(score>=60){
+
+diagnosis="心不全増悪";
+
+}else{
+
+diagnosis="情報不足";
+
+}
+
+}
+
+
+if(currentCase==2){
+
+if(score>=60){
+
+diagnosis="誤嚥性肺炎";
+
+}else{
+
+diagnosis="情報不足";
+
+}
+
+}
+
+
+
+if(score>=80){
+
+level="エキスパート";
+
+}
+
+else if(score>=60){
+
+level="上級者";
+
+}
+
+else{
+
+level="初心者";
+
+}
+
+
+
+document.getElementById("result").innerHTML=
+
+"診断："+diagnosis+"<br>"
+
++
+
+"スコア："+score+"<br>"
+
++
+
+"レベル："+level;
+
+
+}
+
+
+</script>
+
+
+</body>
+</html>
